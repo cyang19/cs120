@@ -61,7 +61,7 @@ class BinarySearchTree:
         if left_size > ind and self.left is not None:
             return self.left.select(ind)
         if left_size < ind and self.right is not None:
-            return self.right.select(ind)
+            return self.right.select(ind-left_size-1)
         return None
 
 
@@ -88,20 +88,21 @@ class BinarySearchTree:
     
     returns the original (top level) tree - allows for easy chaining in tests
     '''
+
     def insert(self, key):
         if self.key is None:
             self.key = key
         elif self.key > key: 
             if self.left is None:
                 self.left = BinarySearchTree(self.debugger)
+            self.size += 1
             self.left.insert(key)
         elif self.key < key:
             if self.right is None:
                 self.right = BinarySearchTree(self.debugger)
+            self.size += 1
             self.right.insert(key)
-        self.calculate_sizes()
         return self
-
     
     ####### Part b #######
 
@@ -128,7 +129,99 @@ class BinarySearchTree:
     '''
     def rotate(self, direction, child_side):
         # Your code goes here
-        return self
+        if direction == "L":
+            if child_side == "R" and self.right.right != None:
+                sizetotal = self.right.size
+                A = self.right.left
+                B = self.right.right.left
+                C = self.right.right.right
+
+                if C == None: 
+                    sizec = 0
+                else:
+                    sizec = C.size
+
+                x = self.right
+                y = self.right.right
+
+                self.right = y
+                y.left = x
+                x.right = B
+
+                self.right.size = sizetotal
+                self.right.left.size = sizetotal - sizec - 1
+                return self
+
+            if child_side == "L" and self.left.right != None:
+                sizetotal = self.left.size
+                A = self.left.left
+                B = self.left.right.left
+                C = self.left.right.right
+
+                if C == None: 
+                    sizec = 0
+                else:
+                    sizec = C.size
+                
+                x = self.left 
+                y = self.left.right 
+
+                self.left = y
+                y.left = x
+                x.right = B
+
+                self.left.size = sizetotal
+                self.left.left.size = sizetotal - sizec - 1
+                return self
+
+        else:
+            if child_side == "R" and self.right.left != None:
+                sizetotal = self.right.size 
+                A = self.right.left.left
+                B = self.right.left.right
+                C = self.right.right
+
+                if A == None: 
+                    sizea = 0
+                else:
+                    sizea = A.size
+                
+                x = self.right
+                y = self.right.left
+
+                self.right = y
+                y.right = x
+                x.left = B
+
+                self.right.size = sizetotal
+                self.right.right.size = sizetotal - sizea - 1
+
+                return self
+
+            if child_side == "L" and self.left.left != None:
+                sizetotal = self.left.size 
+                A = self.left.left.left
+                B = self.left.left.right
+                C = self.left.right
+
+                if A == None: 
+                    sizea = 0
+                else:
+                    sizea = A.size
+                
+                x = self.left
+                y = self.left.left
+
+                self.left = y
+                y.right = x
+                x.left = B
+
+                self.left.size = sizetotal
+                self.left.right.size = sizetotal - sizea - 1
+
+                return self
+
+
 
     def print_bst(self):
         if self.left is not None:

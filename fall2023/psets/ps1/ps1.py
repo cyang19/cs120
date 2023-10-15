@@ -78,4 +78,20 @@ def BC(n, b, k):
 
 def radixSort(univsize, base, arr):
     """TODO: Implement Radix Sort using BC and countSort"""
-    return [] 
+    k = math.ceil(math.log2(univsize)/math.log2(base))
+    n = len(arr)
+    B = []
+    retarray = []
+    for i in range(n):
+        key = arr[i][0]
+        B.append([key, (arr[i][1], BC(key, base, k))])
+    for j in range(k): 
+        for i in range(n): 
+            B[i][0] = B[i][1][1][j]
+        B = countSort(base, B)
+    for i in range(n):
+        sum = 0
+        for m in range(k):
+            sum += B[i][1][1][m] * math.pow(base, m)
+        retarray.append((sum, B[i][1][0])) #should be a key value pair
+    return retarray 
